@@ -1,0 +1,34 @@
+ARG ROS_DISTRO=humble
+FROM sjtu_drone_base:${ROS_DISTRO}
+
+ARG ROS_DISTRO=humble
+ENV ROS_DISTRO=${ROS_DISTRO}
+
+# Install GUI + ROS tools (cached after first run)
+RUN apt-get update && apt-get install -y \
+        ros-${ROS_DISTRO}-rviz2 \
+        ros-${ROS_DISTRO}-xacro \
+        ros-${ROS_DISTRO}-robot-state-publisher \
+        ros-${ROS_DISTRO}-joint-state-publisher \
+        ros-${ROS_DISTRO}-joy \
+        xterm \
+        --no-install-recommends \
+    && apt-get clean
+
+# Copy your local source files
+COPY ./sjtu_drone_description /ros2_ws/src/sjtu_drone_description
+COPY ./sjtu_drone_bringup     /ros2_ws/src/sjtu_drone_bringup
+COPY ./sjtu_drone_control     /ros2_ws/src/sjtu_drone_control
+
+WORKDIR /ros2_ws
+
+# Build ROS packages
+RUN /bin/bash -c \
+    "source /opt/ros/${ROS_DISTRO}/setup.bash && \
+     rosdep install --from-paths src --ignore-src -r -y && \
+     colcon build --symlink-install"
+
+CMD ["/bin/bash", "-c", \
+    "source /opt/ros/${ROS_DISTRO}/setup.bash && \
+     source /ros2_ws/install/setup.bash && \
+     ros2 launch sjtu_drone_bringup sjtu_drone_bringup.launch.py"]

@@ -1,0 +1,75 @@
+ARG ROS_DISTRO=humble
+FROM sjtu_drone_base:${ROS_DISTRO}
+
+ARG ROS_DISTRO=humble
+ENV ROS_DISTRO=${ROS_DISTRO}
+
+# Install GUI + ROS tools (cached after first run)
+RUN apt-get update && apt-get install -y \
+        ros-${ROS_DISTRO}-rviz2 \
+        ros-${ROS_DISTRO}-xacro \
+        ros-${ROS_DISTRO}-robot-state-publisher \
+        ros-${ROS_DISTRO}-joint-state-publisher \
+        ros-${ROS_DISTRO}-joy \
+        xterm \
+        --no-install-recommends \
+    && apt-get clean
+
+RUN apt-get update && apt-get install -y \
+        ros-${ROS_DISTRO}-rtabmap-ros \
+        ros-${ROS_DISTRO}-rtabmap-slam \
+        ros-${ROS_DISTRO}-rtabmap-viz \
+        ros-${ROS_DISTRO}-rtabmap-launch \
+        ros-${ROS_DISTRO}-rtabmap-rviz-plugins \
+        --no-install-recommends \
+    && apt-get clean    
+
+# Python deps for VLM + Semantic SLAM nodes
+# Python deps for VLM + Semantic SLAM nodes
+# Python deps for VLM + Semantic SLAM nodes
+# Python deps for VLM + Semantic SLAM nodes
+RUN apt-get update && apt-get install -y python3-pip \
+    && pip3 install \
+        "numpy<2" \
+        chromadb \
+        ultralytics \
+        requests \
+        sentence-transformers \
+    && apt-get clean
+
+# OpenVINS dependencies
+# OpenVINS dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    libeigen3-dev \
+    libboost-all-dev \
+    libceres-dev \
+    && apt-get clean
+
+# Clone and build OpenVINS
+# Clone and build OpenVINS
+# Clone and build OpenVINS
+RUN git clone https://github.com/rpng/open_vins.git /ros2_ws/src/open_vins && \
+    bash -c "source /opt/ros/humble/setup.bash && \
+    cd /ros2_ws && \
+    colcon build --packages-select ov_core ov_init ov_msckf ov_ros2 \
+    --cmake-args -DCMAKE_BUILD_TYPE=Release \
+    --event-handlers console_direct+"
+
+# Copy your local source files
+COPY ./sjtu_drone_description /ros2_ws/src/sjtu_drone_description
+COPY ./sjtu_drone_bringup     /ros2_ws/src/sjtu_drone_bringup
+COPY ./sjtu_drone_control     /ros2_ws/src/sjtu_drone_control
+
+WORKDIR /ros2_ws
+
+# Build ROS packages
+RUN /bin/bash -c \
+    "source /opt/ros/${ROS_DISTRO}/setup.bash && \
+     rosdep install --from-paths src --ignore-src -r -y && \
+     colcon build --symlink-install"
+
+CMD ["/bin/bash", "-c", \
+    "source /opt/ros/${ROS_DISTRO}/setup.bash && \
+     source /ros2_ws/install/setup.bash && \
+     ros2 launch sjtu_drone_bringup sjtu_drone_bringup.launch.py"]

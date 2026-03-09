@@ -1,0 +1,22 @@
+%YAML:1.0
+
+# Camera 0 — front RGB-D camera
+# Intrinsics from /simple_drone/rgbd/camera_info_fixed:
+#   fx=fy=554.3827  cx=320.5  cy=240.5
+# Extrinsics from URDF:
+#   Camera at xyz="0.2 0 0" rpy="0 0 0" from base_link
+#   Optical frame: rpy="-1.5708 0 -1.5708"
+#   T_imu_cam = rotation from optical to body + 0.2m translation
+cam0:
+  T_imu_cam:
+    - [ 0.0,  0.0,  1.0,  0.0]
+    - [-1.0,  0.0,  0.0,  0.0]
+    - [ 0.0, -1.0,  0.0,  0.2]
+    - [ 0.0,  0.0,  0.0,  1.0]
+  cam_overlaps: []
+  camera_model: pinhole
+  distortion_coeffs: [0.0, 0.0, 0.0, 0.0]
+  distortion_model: radtan
+  intrinsics: [554.3827128226441, 554.3827128226441, 320.5, 240.5]
+  resolution: [640, 480]
+  rostopic: /simple_drone/rgbd/image_raw_fixed

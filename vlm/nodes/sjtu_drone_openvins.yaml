@@ -1,0 +1,80 @@
+%YAML:1.0
+
+# ──────────────────────────────────────────────
+# OpenVINS config for sjtu_drone simulation
+# OpenCV YAML format
+# ──────────────────────────────────────────────
+
+# ROS topics
+topic_imu: "/simple_drone/imu/out"
+topic_camera0: "/simple_drone/rgbd/image_raw_fixed"
+
+# Estimator settings
+max_cameras: 1
+use_stereo: false
+use_klt: true
+num_pts: 200
+fast_threshold: 20
+grid_x: 5
+grid_y: 5
+min_px_dist: 8
+knn_ratio: 0.70
+downsample_cameras: false
+multi_threading: true
+
+# Initialization
+dt_slam_delay: 3.0
+init_window_time: 0.75
+init_imu_thresh: 1.5
+
+# Feature representation
+feat_rep_msckf: "GLOBAL_3D"
+feat_rep_slam: "GLOBAL_3D"
+feat_rep_aruco: "GLOBAL_3D"
+
+# SLAM features
+max_slam: 50
+max_slam_in_update: 25
+max_msckf_in_update: 40
+num_aruco: 0
+
+# Zero velocity update
+try_zupt: true
+zupt_chi2_multipler: 0
+zupt_max_velocity: 0.3
+zupt_noise_multiplier: 50.0
+
+# Gravity
+gravity_mag: 9.81
+
+# IMU noise
+gyroscope_noise_density: 0.005
+gyroscope_random_walk: 0.0002
+accelerometer_noise_density: 0.01
+accelerometer_random_walk: 0.0002
+
+# ──────────────────────────────────────────────
+# Camera 0 intrinsics
+# fx=554.38 fy=554.38 cx=320.5 cy=240.5
+# ──────────────────────────────────────────────
+cam0_calib_extrinsics: true
+cam0_calib_intrinsics: false
+
+cam0_wh: [640, 480]
+
+cam0_intrinsics: [554.3827128226441, 554.3827128226441, 320.5, 240.5]
+
+cam0_distortion_model: "none"
+cam0_distortion_coeffs: [0.0, 0.0, 0.0, 0.0]
+
+# IMU to Camera extrinsics (T_CtoI 4x4 row-major)
+# Camera at xyz="0.2 0 0" rpy="0 0 0" from base_link
+# Optical frame: rpy="-1.5708 0 -1.5708"
+cam0_T_ci: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: d
+   data: [0, -1, 0, 0.2,
+          0,  0,-1, 0.0,
+          1,  0, 0, 0.0,
+          0,  0, 0, 1.0]

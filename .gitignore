@@ -1,0 +1,13 @@
+*.db
+*.db-shm
+*.db-wal
+*.bin
+*.sqlite3
+*.tmp
+*.pt
+__pycache__/
+*.pyc
+log/
+build/
+install/
+vlm/maps/

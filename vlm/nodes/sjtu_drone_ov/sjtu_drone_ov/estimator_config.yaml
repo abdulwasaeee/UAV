@@ -1,0 +1,71 @@
+%YAML:1.0
+
+verbosity: "INFO"
+
+use_fej: true
+integration: "rk4"
+use_stereo: false
+max_cameras: 1
+
+calib_cam_extrinsics: true
+calib_cam_intrinsics: false
+calib_cam_timeoffset: true
+calib_imu_intrinsics: false
+calib_imu_g_sensitivity: false
+
+max_clones: 11
+max_slam: 50
+max_slam_in_update: 25
+max_msckf_in_update: 40
+dt_slam_delay: 2
+
+gravity_mag: 9.81
+
+feat_rep_msckf: "GLOBAL_3D"
+feat_rep_slam: "GLOBAL_3D"
+feat_rep_aruco: "GLOBAL_3D"
+
+try_zupt: true
+zupt_chi2_multipler: 0
+zupt_max_velocity: 0.3
+zupt_noise_multiplier: 50
+zupt_max_disparity: 1.0
+zupt_only_at_beginning: false
+
+init_window_time: 1.0
+init_imu_thresh: 1.0
+init_max_disparity: 1.5
+init_max_features: 15
+
+init_dyn_use: false
+
+record_timing_information: false
+save_total_state: false
+
+use_klt: true
+num_pts: 200
+fast_threshold: 20
+grid_x: 10
+grid_y: 10
+min_px_dist: 10
+knn_ratio: 0.70
+track_frequency: 20.0
+downsample_cameras: false
+num_opencv_threads: 4
+histogram_method: "HISTOGRAM"
+
+use_aruco: false
+num_aruco: 1024
+downsize_aruco: true
+
+up_msckf_sigma_px: 1
+up_msckf_chi2_multipler: 1
+up_slam_sigma_px: 1
+up_slam_chi2_multipler: 1
+up_aruco_sigma_px: 1
+up_aruco_chi2_multipler: 1
+
+use_mask: false
+
+relative_config_imu: "kalibr_imu_chain.yaml"
+relative_config_imucam: "kalibr_imucam_chain.yaml"
